@@ -92,10 +92,7 @@ def unzip_and_convert(PATH_IN):
                 print(file)
                 file_out = wb.unzip_ZIP(file_path)
                 wb.crx2rnx(file_out)
-                
-            # if not file.endswith('o'):
-            #     os
-                
+            
             
         except:
             print(file_path, 'doest work')
@@ -116,16 +113,3 @@ def run(year = 2021, last = 1, root = 'D:\\'):
         unzip_and_convert(PATH_IN)
         
 run(year = 2023)
-# year = 2023
-# doy = 278
-# PATH_IN = gs.paths(
-#     year, doy
-#     ).rinex
-
-# for file in os.listdir(PATH_IN):
-    
-    
-
-# unzip_and_convert(PATH_IN)
- 
- 

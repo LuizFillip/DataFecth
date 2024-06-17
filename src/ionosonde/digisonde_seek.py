@@ -4,8 +4,8 @@ from tqdm import tqdm
 import base as b 
 import datetime as dt
 import core as c 
+import pandas as pd 
 
-infile = 'D:/ionograms/07/'
 
 def copy_all_in_folder(infile):
     
@@ -25,41 +25,67 @@ def copy_all_in_folder(infile):
                     shutil.copy(src, dst)
                     
                     
-
-def copy_by_dates(dates, site):
+def fn2dn(file):
     
-    PATH =  'database/ionogram/'
-
-    b.make_dir(f'{PATH}/{site}')
+    date_string = file.split('_')[1][:-4]
+    fmt = '%Y%j%H%M%S'
+    return dt.datetime.strptime(date_string, fmt)
     
+
+def range_times(start):
+    
+    delta = dt.timedelta(hours = 14)
+    end = start + delta
+    
+    return pd.date_range(start, end, freq = '10min')
+
+
+
+def copy_by_time(PATH, dates, site):
+    
+    path_out = f'{PATH}{site}'
     
     for dn in dates:
         
         folder = dn.strftime(f'%Y%m%d{site}')
-        
-        path_out = os.path.join(PATH, folder[-1])
-        
+         
         path_folder = os.path.join(PATH, folder)
         
-        t = dn.strftime('%m/%d')
-        
-        for file in tqdm(os.listdir(path_folder), t):
+        for file in os.listdir(path_folder):
+            
             src = os.path.join(path_folder, file)
             dst = os.path.join(path_out, file)
             
-            if file.endswith('SAO'):
-                try:
-                    shutil.copy(src, dst)
-                except:
-                    continue 
+            # if dn == fn2dn(file):
+            shutil.copy(src, dst)
                 
-# for site in ['S', 'B']:
+
+PATH = 'database/ionogram/'
+
+def main():
     
-date = dt.date(2015, 12, 20)
+    dn = dt.datetime(2015, 12, 1, 18)
+    dn = dt.datetime(2017, 9, 17, 20)
+    
+    dates = c.undisturbed_days(dn, threshold = 8)
 
-dates = c.undisturbed_days(date, threshold = 18).index 
+    PATH = 'database/ionogram/'
+        
+    for site in ['B', 'S', 'F', 'C']:
+        
+        b.make_dir(f'{PATH}/{site}')
+    
+        # for start in tqdm(dates, site):
+    
+        copy_by_time(PATH, dates, site)
+            
+            
+# main()
 
-
-site = 'B'
-
-copy_by_dates(dates, site)
+# dn = dt.datetime(2013, 3, 17, 20)
+ 
+# dates = c.undisturbed_days(dn, threshold = 8)
+# dates = dates[:5] 
+# site = 'S'
+# b.make_dir(f'{PATH}/{site}')
+# copy_by_time(PATH, dates, site)
