@@ -12,9 +12,10 @@ def fn2dn(file):
     return dt.datetime.strptime(date_string, fmt)
     
 
-path_in = 'D:\\iono\\bv\\2014\\'
+
+
 def copy_files(path_in):
-    path_out = 'database/ionogram/B/'
+    path_out = 'database/ionogram/'
     # b.make_dir(path_out)
     
     
@@ -27,14 +28,17 @@ def copy_files(path_in):
             
             dn = fn2dn(file)
             
-            if ((dn.time() < dt.time(23, 50)) & 
-                (dn.time() > dt.time(18, 0))): 
+            if dn.month <= 6: 
+                folder_out = 'B'
+            else:
+                folder_out = 'B2'
                 
-                
-                src = os.path.join(path_folder, file)
-                dst = os.path.join(path_out, file)
-                
-                shutil.copy(src, dst)
-    
+            src = os.path.join(path_folder, file)
+            dst = os.path.join(path_out, folder_out, file)
+            
+            shutil.copy(src, dst)
 
-# copy_files(path_in)
+year = 2015
+path_in = f'D:\\iono\\bv\\{year}\\'
+
+copy_files(path_in)
